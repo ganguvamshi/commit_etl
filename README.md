@@ -16,6 +16,27 @@ With the data ingested, address the follow queries:
 
 Here I am using Python for ETL process. This will authenticate and extract the commits from Github REST API, Transform or filter the required fields and load them to the local postgres database which is running inside a docker containter.
 
+## GitHub REST API investigation
+
+Though there was hint to use the `committer` object instead of `author`. upon looking up into the results, the `committer` object seems not relevant as it has the same value across different authors.  Below we can see the committer login is web-flow for all commits which is misleading. From gitlab docs, i learnt that this `web-flow` is the Git committer for all web commits (merge/revert/edit/etc...) made on GitHub.com. Hence, I used `author` object instead of the `committer`.
+
+```
+>>> rec_df.shape
+(1569, 58)
+>>> rec_df.head()
+                                        sha                                            node_id                                                url  ... committer.type committer.site_admin author
+0  9d5327806fac61cd62abd30a6339b0cb26ad1ebf  C_kwDOAgUK29oAKDlkNTMyNzgwNmZhYzYxY2Q2MmFiZDMw...  https://api.github.com/repos/apache/airflow/co...  ...           User                False    NaN
+1  7faa72795185c1af4b21f207ce7e0735c4365d46  C_kwDOAgUK29oAKDdmYWE3Mjc5NTE4NWMxYWY0YjIxZjIw...  https://api.github.com/repos/apache/airflow/co...  ...           User                False    NaN
+2  76c2ade2c63abc3677b8fcd59af6f8779b613be7  C_kwDOAgUK29oAKDc2YzJhZGUyYzYzYWJjMzY3N2I4ZmNk...  https://api.github.com/repos/apache/airflow/co...  ...           User                False    NaN
+3  015fef31bb7f848b321d5287edeb6ff6ac63ab10  C_kwDOAgUK29oAKDAxNWZlZjMxYmI3Zjg0OGIzMjFkNTI4...  https://api.github.com/repos/apache/airflow/co...  ...           User                False    NaN
+4  379bd80573e2c02810367ee28288e59a7af2ac10  C_kwDOAgUK29oAKDM3OWJkODA1NzNlMmMwMjgxMDM2N2Vl...  https://api.github.com/repos/apache/airflow/co...  ...           User                False    NaN
+
+[5 rows x 58 columns]
+>>> rec_df[['committer.login', 'committer.id']].drop_duplicates()
+  committer.login  committer.id
+0        web-flow      19864447
+```
+
 
 ## Prerequisites
 
