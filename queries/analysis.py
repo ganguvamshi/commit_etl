@@ -46,14 +46,19 @@ def calculate_heatmap(df):
 if __name__=="__main__":
     # create the sql object for github db 
     dbobj  = CommitsDB()
+    # test the connectoon
+    dbobj.test_conn()
     
     # get all information from commits table 
     query = "SELECT * FROM commits_extended;"
     commits_df = dbobj.read_query(query)
 
+
     # question 1: determine the top 5 committers ranked by count of commits and their number of commits.
     top_commiters = find_top_commiters(commits_df)
     print(f"Top 5 Commiters \n {top_commiters} \n")
+    
+    
     # question 2: determine the committer with the longest commit streak.
     long_streak_commiter = find_longest_streak_commiter(commits_df)
     print(f"Commiter with longest streak: \n {long_streak_commiter}\n")

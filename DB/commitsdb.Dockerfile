@@ -1,8 +1,8 @@
 FROM postgres:latest
 
-ARG DB_USER
-ARG DB_PASSWD
-ARG DB_NAME
+ARG DB_USER=vamshi
+ARG DB_PASSWD=pg_postgres_vam
+ARG DB_NAME=github
 
 # Set environment variables for PostgreSQL
 ENV POSTGRES_USER=$DB_USER

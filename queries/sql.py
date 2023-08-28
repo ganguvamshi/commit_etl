@@ -46,7 +46,7 @@ class CommitsDB():
             
         except Exception as error:
             logger.error(f"Connection failed {error}")
-            return False
+            sys.ext(1)
         else:
             logger.info(f"Conncection successful to {self.dbname}.{self.table}")
             return df

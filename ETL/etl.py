@@ -31,8 +31,8 @@ def filter_json_records(json_commits):
     return fil_records
 
 
-def loadDB(records):
-    load_dotenv(dotenv_path="../.env")
+def loadDB(records, envfile):
+    load_dotenv(dotenv_path=envfile)
     # set up the db connection
     connection = psycopg2.connect(
         host="localhost",
@@ -57,11 +57,13 @@ def loadDB(records):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(name)s-%(levelname)s-%(asctime)s-%(message)s")
     logger = logging.getLogger("github_etl")
+    envfile = os.path.join(os.path.dirname(os.path.dirname(__file__)),".env")
     argp = argparse.ArgumentParser()
     argp.add_argument('-u', dest="github_url", required=True, action='store', type=str, help="github repo url")
     argp.add_argument('-d', dest='interval_days', default=180, action='store', type=int, help="time interval in days (def: 180)")
+    argp.add_argument('-e', dest='env_file', default=envfile, help="path to the .env file (def:../.env)")
     args = argp.parse_args()
-
+    logger.info(f"env file used: {args.env_file}")
     # Create the api class object
     #example: git_extractor = GithubCommitExtractor("https://github.com/apache/airflow")
     git_extractor = GithubCommitExtractor(args.github_url)
@@ -78,5 +80,5 @@ if __name__ == "__main__":
     filtered_records = filter_json_records(commits)
     logger.info(f"filtered the required records from the api response")
     # Load them into the backend DB
-    loadDB(filtered_records)
+    loadDB(filtered_records, args.env_file)
     logger.info(f"finished loading the records to DB ({os.getenv('DB_NAME')})")
