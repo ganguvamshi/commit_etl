@@ -22,7 +22,7 @@ class GithubCommitExtractor:
             headers = {"Authorization": "token {}".format(self.git_token)}
             params = {'since': since_date, 'per_page': 100}
             while True:
-                response = requests.get(api_commits_url, params={'since': since_date}, headers=headers)
+                response = requests.get(api_commits_url, params=params, headers=headers)
                 response_json = response.json()
 
                 if response.status_code != 200:
