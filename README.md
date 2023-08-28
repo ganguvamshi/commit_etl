@@ -71,8 +71,8 @@ Environment:
  - [.env](./.env) dot file containing the environmental variables used for DB connection.
 
 Queries:
- - [sql.py] used for creating database class to connect and read from the postgres.
- - [analysis.py] contains the solutions for the three anlysis questions
+ - [sql.py](./queries/sql.py) used for creating database class to connect and read from the postgres.
+ - [analysis.py](./queries/analysis.py) contains the solutions for the three anlysis questions
 
 
 ## Implementation
@@ -97,12 +97,12 @@ python ETL/etl.py -u 'https://github.com/apache/airflow' -d 180
 ### 3. Analysis
 
 _make sure you are in the same conda environment_
-```
 
+main script: [analysis.py](./queries/analysis.py)
+```
 python queries/analysis.py
 
 ```
-
 This will connect to the database, extract the records and prints the output to the console for 
 - top 5 committers 
 - commiter with the longest commit streak
