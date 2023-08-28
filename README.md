@@ -19,8 +19,8 @@ Using Python to authenticate and extract the commits from Github REST API. trans
 
 ## Prerequisites
 
-- [Mamba]() A faster conda like environment manager used to create the python environment. 
-- [Docker]() for building the postgres database. 
+- [Mamba](https://mamba.readthedocs.io/en/latest/mamba-installation.html#mamba-install) A faster conda like environment manager used to create the python environment. 
+- [Docker](https://docs.docker.com/engine/install/) for building the postgres database. 
 
 
 ## Installation
@@ -32,10 +32,17 @@ Using Python to authenticate and extract the commits from Github REST API. trans
 
 ## Scripts
 
- - [Github.py](./Github.py) used to create a GithubCommitExtractor class for connecting to Github via REST API and pull the commits 
- - [etl.py](./etl.py) The main script for Extracting the Commits, Transforming the records and Loading them to the PostgresDB
- - [setup.sql](./setup.sql) used for creating the tables and required views. 
- - [commitsdb.Dockerfile](./commitsdb.Dockerfile) Dockerfile used for building postgresDB. 
+ETL:
+ - [Github.py](./ETL/Github.py) used to create a GithubCommitExtractor class for connecting to Github via REST API and pull the commits 
+ - [etl.py](./ETL/etl.py) The main script for Extracting the Commits, Transforming the records and Loading them to the PostgresDB
+
+Database:
+ - [setup.sql](./DB/setup.sql) used for creating the tables and required views. 
+ - [commitsdb.Dockerfile](./DB/commitsdb.Dockerfile) Dockerfile used for building postgresDB. 
+
+Environment:
  - [.env](./.env) dot file containing the environmental variables used for DB connection.
 
+
+## Implementation
 

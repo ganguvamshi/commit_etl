@@ -32,7 +32,7 @@ def filter_json_records(json_commits):
 
 
 def loadDB(records):
-    load_dotenv(dotenv_path=".env")
+    load_dotenv(dotenv_path="../.env")
     # set up the db connection
     connection = psycopg2.connect(
         host="localhost",
