@@ -18,7 +18,7 @@ Here I am using Python for ETL process. This will authenticate and extract the c
 
 ## GitHub REST API investigation
 
-Though there was hint to use the `committer` object instead of `author`. upon looking up into the results, the `committer` object seems not relevant as it has the same value across different authors.  Below we can see the committer login is web-flow for all commits which is misleading. From gitlab docs, i learnt that this `web-flow` is the Git committer for all web commits (merge/revert/edit/etc...) made on GitHub.com. Hence, I used `author` object instead of the `committer`.
+Though there was hint to use the `committer` object instead of `author`. upon investigating the result data, the `committer` object seems not relevant as it has the same value across different authors.  Below we can see the committer login is web-flow for all commits which is misleading. From gitlab docs, i learnt that this `web-flow` is the Git committer for all web commits (merge/revert/edit/etc...) made on GitHub.com. Hence, I used `author` object instead of the `committer`.
 
 ```
 >>> rec_df.shape
@@ -35,6 +35,10 @@ Though there was hint to use the `committer` object instead of `author`. upon lo
 >>> rec_df[['committer.login', 'committer.id']].drop_duplicates()
   committer.login  committer.id
 0        web-flow      19864447
+
+>>> rec_df[['commit.committer.name', 'commit.committer.email']].drop_duplicates()
+  commit.committer.name commit.committer.email
+0                GitHub     noreply@github.com
 ```
 
 
