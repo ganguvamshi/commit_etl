@@ -145,8 +145,8 @@ github=# \dt
 (1 row)
 
 github=# select * from commits;
- commit_id | committer_name | committer_email | committer_date | created_at 
------------+----------------+-----------------+----------------+------------
+ commit_id | committer_name | committer_email | committer_date | commit_repo | created_at 
+-----------+----------------+-----------------+----------------+-------------+------------       
 (0 rows)
 
 github=#
@@ -156,11 +156,14 @@ github=#
 ```
 mamba activate gitapienv
 python ETL/etl.py -u 'https://github.com/apache/airflow' -d 180 2>&1 |tee ETL/log_etl.txt
+python ETL/etl.py -u 'https://github.com/apache/airflow-site' -d 180 2>&1 |tee ETL/log_etl_airflow-site.txt
+python ETL/etl.py -u 'https://github.com/apache/spark' -d 180 2>&1 |tee ETL/log_etl_spark.txt
+python ETL/etl.py -u 'https://github.com/dpgaspar/Flask-AppBuilder' -d 180 2>&1 |tee ETL/log_etl_flask-appbuiler.txt
 ```
 
 `-d` can be changed according to the desired time window. This will extract the commits from Github repo, select the required feilds and load them into the githubdb database. 
 
-output log file: [log_etl.txt](./ETL/log_etl.txt)
+sample output log file: [log_etl.txt](./ETL/log_etl.txt)
 
 ### 3. Analysis
 
@@ -175,29 +178,34 @@ python analysis.py 2>&1 |tee log_analysis.txt
 
 output:
 ```
-postgres_sql-INFO-2023-08-28 17:14:34,552-Conncection successful to github.commits
-Top 5 Commiters 
-     committer_name  num_counts
-0     Jarek Potiuk         405
-1    Hussein Awala         142
-2          eladkal          93
-3   Tzu-ping Chung          69
-4  Miroslav Šedivý          69
+postgres_sql-INFO-2023-08-29 16:19:42,551-Conncection successful to github.commits
+Top 5 Commiters
+                         commit_repo  ...  user_rank
+committer_name                       ...
+Jarek Potiuk    apache/airflow-site  ...        1.0
+Jarek Potiuk         apache/airflow  ...        1.0
+yangjie01              apache/spark  ...        2.0
+Hussein Awala        apache/airflow  ...        3.0
+Hussein Awala   apache/airflow-site  ...        3.0
+panbingkun             apache/spark  ...        4.0
+Ruifeng Zheng          apache/spark  ...        5.0
+
+[7 rows x 4 columns]
 
 Commiter with longest streak:
-     committer_name   streak_duration
-126   Jarek Potiuk 178 days 07:06:48
+     committer_name          commit_repo   streak_duration
+216   Jarek Potiuk  apache/airflow-site 900 days 16:44:25
 
 count heatmap by Day and Hour Block:
  hour_block  00-03  03-06  06-09  09-12  12-15  15-18  18-21  21-00
 day
-MON             8     28     61     34     35     54     68     17
-TUE             9     26     32     47     39     46     75     34
-WED            21     33     60     51     40     55     55     33
-THU            20     26     54     43     58     66     63     43
-FRI             9     33     51     45     39     96     65     26
-SAT             3     14     51     29     30     40     46     21
-SUN             4     21     13     23     26     37     40     28
+MON           128     78     98     76     76     97    100     63
+TUE           121     67     85    104     96     91     97     60
+WED           130     98    125     89     91     95     83     53
+THU           104     86    121     87     97     94     95     70
+FRI           119     81     89     83     71    144     91     46
+SAT            44     33     71     38     53     55     55     27
+SUN            27     41     22     41     39     46     55     42
 
 heatmap plot is saved to heatmap_plot.png
 ```
@@ -209,4 +217,6 @@ This will connect to the database, extract the records and prints the output to 
 - heatmap count grouped by `day` and `hour_block`
   - will also save the plot as [heatmap_plot.png](./queries/heatmap_plot.png)
 
+heatmap:
 
+![Alt text](./queries/heatmap_plot.png)
