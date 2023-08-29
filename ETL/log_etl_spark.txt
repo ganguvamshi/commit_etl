@@ -1,0 +1,5 @@
+github_etl-INFO-2023-08-29 00:50:08,650-env file used: /mnt/wsl/docker-desktop-bind-mounts/Ubuntu-22.04/cde698361fb506793f82fdbeff5c8ee725a040d899efe7508d23f58953347a00/.env
+github_etl-INFO-2023-08-29 00:50:08,650-extractor class is ready
+github_etl-INFO-2023-08-29 00:50:36,142-finished pulling commits for https://github.com/apache/spark for the past 180, Total Commits: 1882
+github_etl-INFO-2023-08-29 00:50:36,144-filtered the required records from the api response
+github_etl-INFO-2023-08-29 00:50:36,232-finished loading the records to DB (github)

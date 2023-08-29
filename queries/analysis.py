@@ -10,9 +10,16 @@ import matplotlib.pyplot as plt
 
 
 
-def find_top_commiters(rec_df):
-    top5 = rec_df.groupby(['committer_name']).apply(lambda x: len(x['commit_id'])).rename("num_counts").reset_index()
-    top5 = top5.sort_values(by='num_counts', ascending=False).head(5).reset_index(drop=True)
+def find_top_commiters(rec_df,top_n=5):
+    repo_count = rec_df.groupby(['committer_name','commit_repo']).apply(lambda x: len(x['commit_id'])).rename('user_repo_count').reset_index()
+    user_count = rec_df.groupby(['committer_name']).apply(lambda x: len(x['commit_id'])).rename('user_commit_count').reset_index()
+    commit_counts  = repo_count.set_index('committer_name').join(user_count.set_index('committer_name'))
+    commit_counts['total_counts'] = commit_counts['user_repo_count'] + commit_counts['user_commit_count']
+    commit_counts = commit_counts.sort_values(['total_counts', 'committer_name'], ascending=[False, True])
+    top_rec = commit_counts.groupby(['committer_name']).first().sort_values('total_counts', ascending=False)
+    top_rec['user_rank'] = top_rec['total_counts'].rank(ascending=False).tolist()
+    commits_counts = commit_counts.join(top_rec[['user_rank']]).sort_values(by='user_rank', ascending=True)
+    top5 = commits_counts[commits_counts.user_rank<=top_n].drop(columns=['total_counts'])
     return top5
 
 
@@ -22,7 +29,7 @@ def cal_duration(user_df):
 
 
 def find_longest_streak_commiter(df):
-    res = df.groupby(['committer_name']).apply(lambda x: cal_duration(x)).rename('streak_duration').reset_index()
+    res = df.groupby(['committer_name', 'commit_repo']).apply(lambda x: cal_duration(x)).rename('streak_duration').reset_index()
     res = res.sort_values(by='streak_duration', ascending=False).head(1)
     return res
 

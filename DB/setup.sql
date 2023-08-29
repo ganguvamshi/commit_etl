@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS commits (
     committer_name VARCHAR(100),
     committer_email VARCHAR(100) NOT NULL,
     committer_date TIMESTAMPTZ  NOT NULL,
+    commit_repo VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (commit_id)
 );

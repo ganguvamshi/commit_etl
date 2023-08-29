@@ -15,9 +15,10 @@ from dotenv import load_dotenv
 
 
 
-def filter_json_records(json_commits):
+def filter_json_records(json_commits, repo_name):
     fil_records = []
     for rec in json_commits:
+        commit_repo = repo_name
         commit_sha = rec['sha']
         committer_name = rec['commit']['author']['name']
         committer_email =  rec['commit']['author']['email']
@@ -26,6 +27,7 @@ def filter_json_records(json_commits):
                 'committer_name': committer_name, 
                 'committer_email': committer_email,
                 'committer_date': committer_date,
+                'commit_repo': commit_repo
                 }
         fil_records.append(res)
     return fil_records
@@ -48,7 +50,8 @@ def loadDB(records, envfile):
                 %(commit_id)s,
                 %(committer_name)s,
                 %(committer_email)s,
-                %(committer_date)s
+                %(committer_date)s,
+                %(commit_repo)s
             );
         """, filtered_records)
     connection.close()
@@ -64,6 +67,7 @@ if __name__ == "__main__":
     argp.add_argument('-e', dest='env_file', default=envfile, help="path to the .env file (def:../.env)")
     args = argp.parse_args()
     logger.info(f"env file used: {args.env_file}")
+    repo_name = args.github_url.replace('https://github.com/','')
     # Create the api class object
     #example: git_extractor = GithubCommitExtractor("https://github.com/apache/airflow")
     git_extractor = GithubCommitExtractor(args.github_url)
@@ -77,7 +81,7 @@ if __name__ == "__main__":
     logger.info(f"finished pulling commits for {args.github_url} for the past {args.interval_days}, Total Commits: {len(commits)}")
     
     # extact the required records from the json responses
-    filtered_records = filter_json_records(commits)
+    filtered_records = filter_json_records(commits, repo_name)
     logger.info(f"filtered the required records from the api response")
     # Load them into the backend DB
     loadDB(filtered_records, args.env_file)
