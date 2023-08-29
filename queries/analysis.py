@@ -74,8 +74,10 @@ if __name__=="__main__":
     heatmap_counts = calculate_heatmap(commits_df)
     print(f"count heatmap by Day and Hour Block:\n {heatmap_counts} \n")
     # plotting heatmap and saving it to file called heatmap_plot.png
-    sns.set(style="darkgrid")
-    sns.heatmap(heatmap_counts, cmap="YlGnBu", annot=True)
     plt_name = "heatmap_plot.png"
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.heatmap(heatmap_counts, cmap='coolwarm', square=True, 
+                annot=True, fmt=',.0f', annot_kws={'size': 'small', 'alpha': 0.4})
     plt.savefig(plt_name)
+    plt.close()   
     print(f"heatmap plot is saved to {plt_name}")
